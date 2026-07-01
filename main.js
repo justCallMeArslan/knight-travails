@@ -17,23 +17,28 @@ function travail(start, target) {
     const startKey = `${start[0]}, ${start[1]}`
     let queue = [start];
     let visited = new Set();
+    let parent = new Map();
 
     visited.add(startKey);
+    parent.set(startKey, null);
 
-    // BFS part
 
     while (queue.length > 0) {
         let node = queue.shift();
 
         if (node[0] === target[0] && node[1] === target[1]) {
-            return node;
+            let targetedPath = getPath(parent, target);
+            const distance = targetedPath.length - 1;
+            return { targetedPath, distance };
         }
 
         let neighbors = getNeighbors(node[0], node[1], boardSize);
         for (let neighbor of neighbors) {
-            let key = `${neighbor[0]}, ${neighbor[1]}`
-            if (!visited.has(key)) {
-                visited.add(key);
+            let neighborKey = `${neighbor[0]}, ${neighbor[1]}`
+            let nodeKey = `${node[0]}, ${node[1]}`
+            if (!visited.has(neighborKey)) {
+                visited.add(neighborKey);
+                parent.set(neighborKey, nodeKey);
                 queue.push(neighbor);
             }
         }
@@ -60,8 +65,8 @@ function getNeighbors(row, col, boardSize) {
         let newA = row + a;
         let newB = col + b;
 
-        if (newA >= 0 && newA < matrix &&
-            newB >= 0 && newB < matrix) {
+        if (newA >= 0 && newA < boardSize &&
+            newB >= 0 && newB < boardSize) {
             neighbors.push([newA, newB]);
         }
     }
@@ -69,3 +74,19 @@ function getNeighbors(row, col, boardSize) {
     return neighbors;
 }
 
+function getPath(parent, target) {
+    let path = [];
+    let current = `${target[0]}, ${target[1]}`
+
+    while (current !== null) {
+        let [row, col] = current.split(", ").map(Number);
+        path.push([row, col]);
+        current = parent.get(current);
+    }
+
+    return path.reverse();
+
+}
+
+console.log(travail([0, 0], [3, 3]));
+console.log(travail([0, 0], [7, 7]));
