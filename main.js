@@ -90,3 +90,6 @@ function getPath(parent, target) {
 
 console.log(travail([0, 0], [3, 3]));
 console.log(travail([0, 0], [7, 7]));
+
+
+// Need to review later to make sure main points grasped.
